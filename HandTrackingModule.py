@@ -4,12 +4,6 @@ import time
 
 class HandDetector:
     def __init__(self, static_image_mode=False, max_num_hands=2, min_detection_confidence=0.5, min_tracking_confidence=0.5):
-        self.cap = cv2.VideoCapture(0)
-
-        if not self.cap.isOpened():
-            print("Error: Could not open webcam.")
-            exit()
-
         self.mpHands = mp.solutions.hands
         self.hands = self.mpHands.Hands(
             static_image_mode=static_image_mode,
@@ -19,46 +13,58 @@ class HandDetector:
         )
         self.mpDraw = mp.solutions.drawing_utils
 
-    def detectHands(self):
-        previousTime = 0
-        currentTime = 0
+    def detectHands(self, img, draw=True):
+        imgRGB = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
+        self.results = self.hands.process(imgRGB)
 
-        while True:
-            ret, frame = self.cap.read()
+        if self.results.multi_hand_landmarks:
+            for handLms in self.results.multi_hand_landmarks:
+                if draw:
+                    self.mpDraw.draw_landmarks(img, handLms, self.mpHands.HAND_CONNECTIONS)
+        return img
 
-            if not ret:
-                print("Error: Could not read frame from webcam.")
-                break
+    def findPosition(self, img, handNo=0, draw=True):
+        lmList = []
+        if self.results.multi_hand_landmarks:
+            myHand = self.results.multi_hand_landmarks[handNo]
+            for id, lm in enumerate(myHand.landmark):
+                h, w, c = img.shape
+                cx, cy = int(lm.x * w), int(lm.y * h)
+                lmList.append([id, cx, cy])
+                if draw:
+                    cv2.circle(img, (cx, cy), 7, (255, 0, 0), cv2.FILLED)
+        return lmList
 
-            imgRGB = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
-            results = self.hands.process(imgRGB)
-            multipleHands = results.multi_hand_landmarks
+def main():
+    previousTime = currentTime = 0
 
-            if multipleHands:
-                for multipleHand in multipleHands:
-                    for id, lm in enumerate(multipleHand.landmark):
-                        h, w, c = frame.shape
-                        cx, cy = int(lm.x * w), int(lm.y * h)
+    capture = cv2.VideoCapture(0)
 
-                        if id in [0, 2, 4, 5, 8, 9, 12, 13, 16, 17, 20]:
-                            cv2.circle(frame, (cx, cy), 10, (255, 0, 0), 3, cv2.FILLED)
+    detector = HandDetector()
 
-                    self.mpDraw.draw_landmarks(frame, multipleHand, self.mpHands.HAND_CONNECTIONS)
+    while True:
+        success, vidObject = capture.read()
+        if not success:
+            break
 
-            currentTime = time.time()
-            fps = 1 / (currentTime - previousTime)
-            previousTime = currentTime
+        vidObject = detector.detectHands(vidObject)
 
-            cv2.putText(frame, str(int(fps)), (10, 70), cv2.FONT_HERSHEY_COMPLEX, 1.5, (255, 0, 0), 3)
+        lmList = detector.findPosition(vidObject)
+        if len(lmList) != 0:
+            print(lmList[4])
 
-            cv2.imshow("Webcam Frame", frame)
+        currentTime = time.time()
+        fps = 1 / (currentTime - previousTime)
+        previousTime = currentTime
 
-            if cv2.waitKey(1) == ord('q'):
-                break
+        cv2.putText(vidObject, f"FPS : {int(fps)}", (40, 70), cv2.FONT_ITALIC, 1, (0, 255, 0), 3)
+        cv2.imshow("Video", vidObject)
 
-        self.cap.release()
-        cv2.destroyAllWindows()
+        if cv2.waitKey(1) & 0xFF == ord('q'):
+            break
+
+    capture.release()
+    cv2.destroyAllWindows()
 
 if __name__ == "__main__":
-    hand_detector = HandDetector()
-    hand_detector.detectHands()
+    main()

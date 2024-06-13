@@ -30,7 +30,7 @@ while True:
     cv2.putText(vidObject, f"FPS : {int(fps)}", (40, 70), cv2.FONT_ITALIC, 2, (255, 0, 0), 2)
     cv2.imshow("Video", vidObject)
 
-    if cv2.waitKey(1) & 0x00FF == ord("q"):
+    if cv2.waitKey(1) & 0xFF == ord("q"):
         break
 
 print("Exiting...")

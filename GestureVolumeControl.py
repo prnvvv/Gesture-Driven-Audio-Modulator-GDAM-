@@ -18,7 +18,7 @@ currentTime = previousTime = 0
 while True:
     success, vidObject = capture.read()
 
-    detector.detect_hands()
+    detector.detectHands()
 
     if not success:
         raise Exception("Error while loading the Webcam")

@@ -2,11 +2,12 @@ import cv2
 import numpy as np
 import time
 import HandTrackingModule as htm
+import math
 
 capture = cv2.VideoCapture(0)
 
-capture.set(3, 1280)
-capture.set(4, 720)
+capture.set(3, 640)
+capture.set(4, 480)
 
 detector = htm.HandDetector()
 
@@ -21,7 +22,6 @@ while True:
     vidObject = detector.detectHands(vidObject)
     lmList = detector.findPosition(vidObject, draw = False)
     if len(lmList) != 0:
-        print(lmList[4], lmList[8])
 
         x1, y1 = lmList[4][1], lmList[4][2]
         x2, y2 = lmList[8][1], lmList[8][2]
@@ -29,7 +29,14 @@ while True:
 
         cv2.circle(vidObject, (x1, y1), 15, (255, 0, 255), cv2.FILLED)
         cv2.circle(vidObject, (x2, y2), 15, (255, 0, 255), cv2.FILLED)
+        cv2.line(vidObject,(x1, y1), (x2, y2), (255, 0, 255), 3)
         cv2.circle(vidObject, (mx, my), 15, (255, 0, 255), cv2.FILLED)
+
+        length = math.sqrt(((x1 - x2) ** 2) + ((y1 - y2) ** 2))
+        print(length)
+
+        if length < 40:
+            cv2.circle(vidObject, (mx, my), 15, (0, 0, 255), cv2.FILLED)
 
 
 

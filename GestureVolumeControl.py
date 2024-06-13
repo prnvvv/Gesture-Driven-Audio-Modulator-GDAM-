@@ -3,6 +3,8 @@ import numpy as np
 import time
 import HandTrackingModule as htm
 import math
+from comtypes import CLSCTX_ALL
+from pycaw.pycaw import AudioUtilities, IAudioEndpointVolume
 
 capture = cv2.VideoCapture(0)
 
@@ -10,6 +12,14 @@ capture.set(3, 640)
 capture.set(4, 480)
 
 detector = htm.HandDetector()
+
+devices = AudioUtilities.GetSpeakers()
+interface = devices.Activate(
+    IAudioEndpointVolume._iid_, CLSCTX_ALL, None)
+volume = interface.QueryInterface(IAudioEndpointVolume)
+#print(volume.GetMasterVolumeLevel)
+print(volume.GetVolumeRange())
+#volume.SetMasterVolumeLevel(-20.0, None)
 
 if not capture.isOpened:
     raise Exception("Webcam is not opened")
@@ -35,7 +45,7 @@ while True:
         length = math.sqrt(((x1 - x2) ** 2) + ((y1 - y2) ** 2))
         print(length)
 
-        if length < 40:
+        if length < 45:
             cv2.circle(vidObject, (mx, my), 15, (0, 0, 255), cv2.FILLED)
 
 

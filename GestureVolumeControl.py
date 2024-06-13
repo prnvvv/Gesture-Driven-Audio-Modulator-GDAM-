@@ -19,6 +19,19 @@ while True:
     success, vidObject = capture.read()
 
     vidObject = detector.detectHands(vidObject)
+    lmList = detector.findPosition(vidObject, draw = False)
+    if len(lmList) != 0:
+        print(lmList[4], lmList[8])
+
+        x1, y1 = lmList[4][1], lmList[4][2]
+        x2, y2 = lmList[8][1], lmList[8][2]
+        mx, my = (x1 + x2) // 2, (y1 + y2) // 2
+
+        cv2.circle(vidObject, (x1, y1), 15, (255, 0, 255), cv2.FILLED)
+        cv2.circle(vidObject, (x2, y2), 15, (255, 0, 255), cv2.FILLED)
+        cv2.circle(vidObject, (mx, my), 15, (255, 0, 255), cv2.FILLED)
+
+
 
     if not success:
         raise Exception("Error while loading the Webcam")

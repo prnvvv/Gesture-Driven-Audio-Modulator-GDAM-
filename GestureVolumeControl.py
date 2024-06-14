@@ -22,7 +22,6 @@ volumeRange = volume.GetVolumeRange()
 minVolumeRange = volumeRange[0]
 maxVolumeRange = volumeRange[1]
 
-
 if not capture.isOpened:
     raise Exception("Webcam is not opened")
 
@@ -30,31 +29,29 @@ currentTime = previousTime = 0
 
 while True:
     success, vidObject = capture.read()
+    if not success:
+        raise Exception("Error while loading the Webcam")
 
     vidObject = detector.detectHands(vidObject)
-    lmList = detector.findPosition(vidObject, draw = False)
+    lmList = detector.findPosition(vidObject, draw=False)
     if len(lmList) != 0:
-
         x1, y1 = lmList[4][1], lmList[4][2]
         x2, y2 = lmList[8][1], lmList[8][2]
         mx, my = (x1 + x2) // 2, (y1 + y2) // 2
 
         cv2.circle(vidObject, (x1, y1), 15, (255, 0, 255), cv2.FILLED)
         cv2.circle(vidObject, (x2, y2), 15, (255, 0, 255), cv2.FILLED)
-        cv2.line(vidObject,(x1, y1), (x2, y2), (255, 0, 255), 3)
+        cv2.line(vidObject, (x1, y1), (x2, y2), (255, 0, 255), 3)
         cv2.circle(vidObject, (mx, my), 15, (255, 0, 255), cv2.FILLED)
 
-        length = math.sqrt(((x1 - x2) ** 2) + ((y1 - y2) ** 2))
-        print(length)
+        length = math.sqrt((x1 - x2) ** 2 + (y1 - y2) ** 2)
+
+        vol = np.interp(length, [15, 350], [minVolumeRange, maxVolumeRange])
+        volume.SetMasterVolumeLevel(vol, None)
 
         if length < 45:
             cv2.circle(vidObject, (mx, my), 15, (0, 0, 255), cv2.FILLED)
 
-
-
-    if not success:
-        raise Exception("Error while loading the Webcam")
-    
     currentTime = time.time()
     fps = 1 / (currentTime - previousTime)
     previousTime = currentTime
@@ -68,4 +65,3 @@ while True:
 print("Exiting...")
 capture.release()
 cv2.destroyAllWindows()
-        

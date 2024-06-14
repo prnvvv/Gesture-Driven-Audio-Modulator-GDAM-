@@ -50,12 +50,10 @@ while True:
 
         length = math.sqrt((x1 - x2) ** 2 + (y1 - y2) ** 2)
 
-        vol = np.interp(length, [50, 300], [minVolumeRange, maxVolumeRange])
-        volBar = np.interp(length, [50, 300], [85, 400])
+        vol = np.interp(length, [30, 300], [maxVolumeRange, minVolumeRange])
+        volBar = np.interp(length, [30, 300], [85, 400])
         volume.SetMasterVolumeLevel(vol, None)
 
-        cv2.rectangle(vidObject, (50, 85), (85, 400), (255, 0, 255), 2)
-        cv2.rectangle(vidObject, (50, int(volBar)), (85, 400), (255, 0, 255), cv2.FILLED)
 
         if length < 50:
             cv2.circle(vidObject, (mx, my), 15, (0, 0, 255), cv2.FILLED)
@@ -64,7 +62,7 @@ while True:
     fps = 1 / (currentTime - previousTime)
     previousTime = currentTime
 
-    volBar = np.interp(length, [85, 400], [0, 100])
+    volBar = np.interp(length, [85, 400], [100, 0])
 
     cv2.putText(vidObject, f"Volume : {int(volBar)}", (40, 70), cv2.FONT_ITALIC, 2, (255, 0, 0), 2)
     cv2.imshow("Video", vidObject)

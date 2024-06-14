@@ -5,12 +5,6 @@ import HandTrackingModule as htm
 import math
 from comtypes import CLSCTX_ALL
 from pycaw.pycaw import AudioUtilities, IAudioEndpointVolume
-import warnings
-import tensorflow as tf
-
-warnings.filterwarnings('ignore', category=UserWarning, message='SymbolDatabase.GetPrototype() is deprecated')
-
-tf.get_logger().setLevel('ERROR')
 
 capture = cv2.VideoCapture(0)
 

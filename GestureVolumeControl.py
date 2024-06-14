@@ -50,7 +50,7 @@ while True:
         volBar = np.interp(length, [50, 300], [85, 400])
         volume.SetMasterVolumeLevel(vol, None)
 
-        cv2.rectangle(vidObject, (50, 90), (85, 400), (255, 0, 255), 2)
+        cv2.rectangle(vidObject, (50, 85), (85, 400), (255, 0, 255), 2)
         cv2.rectangle(vidObject, (50, int(volBar)), (85, 400), (255, 0, 255), cv2.FILLED)
 
         if length < 50:

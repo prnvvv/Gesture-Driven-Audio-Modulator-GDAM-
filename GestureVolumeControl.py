@@ -47,7 +47,11 @@ while True:
         length = math.sqrt((x1 - x2) ** 2 + (y1 - y2) ** 2)
 
         vol = np.interp(length, [50, 300], [minVolumeRange, maxVolumeRange])
+        volBar = np.interp(length, [50, 300], [85, 400])
         volume.SetMasterVolumeLevel(vol, None)
+
+        cv2.rectangle(vidObject, (50, 90), (85, 400), (255, 0, 255), 2)
+        cv2.rectangle(vidObject, (50, int(volBar)), (85, 400), (255, 0, 255), cv2.FILLED)
 
         if length < 50:
             cv2.circle(vidObject, (mx, my), 15, (0, 0, 255), cv2.FILLED)

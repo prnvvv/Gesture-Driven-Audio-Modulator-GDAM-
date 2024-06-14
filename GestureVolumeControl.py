@@ -27,6 +27,10 @@ if not capture.isOpened:
 
 currentTime = previousTime = 0
 
+vol = volBar = 0
+
+length = 0
+
 while True:
     success, vidObject = capture.read()
     if not success:
@@ -60,7 +64,9 @@ while True:
     fps = 1 / (currentTime - previousTime)
     previousTime = currentTime
 
-    cv2.putText(vidObject, f"FPS : {int(fps)}", (40, 70), cv2.FONT_ITALIC, 2, (255, 0, 0), 2)
+    volBar = np.interp(length, [85, 400], [0, 100])
+
+    cv2.putText(vidObject, f"Volume : {int(volBar)}", (40, 70), cv2.FONT_ITALIC, 2, (255, 0, 0), 2)
     cv2.imshow("Video", vidObject)
 
     if cv2.waitKey(1) & 0xFF == ord("q"):

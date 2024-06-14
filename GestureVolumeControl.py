@@ -50,10 +50,9 @@ while True:
 
         length = math.sqrt((x1 - x2) ** 2 + (y1 - y2) ** 2)
 
-        vol = np.interp(length, [30, 300], [maxVolumeRange, minVolumeRange])
-        volBar = np.interp(length, [30, 300], [85, 400])
+        vol = np.interp(length, [20, 300], [maxVolumeRange, minVolumeRange])
+        volBar = np.interp(length, [20, 300], [85, 400])
         volume.SetMasterVolumeLevel(vol, None)
-
 
         if length < 50:
             cv2.circle(vidObject, (mx, my), 15, (0, 0, 255), cv2.FILLED)
@@ -62,9 +61,10 @@ while True:
     fps = 1 / (currentTime - previousTime)
     previousTime = currentTime
 
-    volBar = np.interp(length, [85, 400], [100, 0])
+    currentVolume = volume.GetMasterVolumeLevelScalar() * 100
 
-    cv2.putText(vidObject, f"Volume : {int(volBar)}", (40, 70), cv2.FONT_ITALIC, 2, (255, 0, 0), 2)
+    cv2.putText(vidObject, f"Volume : {int(currentVolume)}", (40, 70), cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 255, 0), 3)
+    
     cv2.imshow("Video", vidObject)
 
     if cv2.waitKey(1) & 0xFF == ord("q"):

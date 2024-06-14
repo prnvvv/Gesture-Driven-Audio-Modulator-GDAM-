@@ -17,8 +17,12 @@ devices = AudioUtilities.GetSpeakers()
 interface = devices.Activate(
     IAudioEndpointVolume._iid_, CLSCTX_ALL, None)
 volume = interface.QueryInterface(IAudioEndpointVolume)
-#print(volume.GetMasterVolumeLevel)
-print(volume.GetVolumeRange())
+
+volumeRange = volume.GetVolumeRange()
+minVolumeRange = volumeRange[0]
+maxVolumeRange = volumeRange[1]
+
+
 #volume.SetMasterVolumeLevel(-20.0, None)
 
 if not capture.isOpened:

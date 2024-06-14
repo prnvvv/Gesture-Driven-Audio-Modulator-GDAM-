@@ -23,8 +23,6 @@ minVolumeRange = volumeRange[0]
 maxVolumeRange = volumeRange[1]
 
 
-#volume.SetMasterVolumeLevel(-20.0, None)
-
 if not capture.isOpened:
     raise Exception("Webcam is not opened")
 

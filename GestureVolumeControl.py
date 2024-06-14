@@ -46,10 +46,10 @@ while True:
 
         length = math.sqrt((x1 - x2) ** 2 + (y1 - y2) ** 2)
 
-        vol = np.interp(length, [15, 350], [minVolumeRange, maxVolumeRange])
+        vol = np.interp(length, [50, 300], [minVolumeRange, maxVolumeRange])
         volume.SetMasterVolumeLevel(vol, None)
 
-        if length < 45:
+        if length < 50:
             cv2.circle(vidObject, (mx, my), 15, (0, 0, 255), cv2.FILLED)
 
     currentTime = time.time()

@@ -27,7 +27,7 @@ if not capture.isOpened:
 
 currentTime = previousTime = 0
 
-vol = volBar = 0
+vol = 0
 
 length = 0
 
@@ -50,8 +50,7 @@ while True:
 
         length = math.sqrt((x1 - x2) ** 2 + (y1 - y2) ** 2)
 
-        vol = np.interp(length, [20, 300], [maxVolumeRange, minVolumeRange])
-        volBar = np.interp(length, [20, 300], [85, 400])
+        vol = np.interp(length, [10, 200], [maxVolumeRange, minVolumeRange])
         volume.SetMasterVolumeLevel(vol, None)
 
         if length < 50:

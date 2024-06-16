@@ -54,7 +54,7 @@ while True:
         volume.SetMasterVolumeLevel(vol, None)
 
         if length < 40:
-            cv2.circle(vidObject, (mx, my), 15, (0, 0, 255), cv2.FILLED)
+            cv2.circle(vidObject, (mx, my), 15, (0, 0, 255), cv2.FILLED, 2)
 
     currentTime = time.time()
     fps = 1 / (currentTime - previousTime)
